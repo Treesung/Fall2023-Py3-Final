@@ -1,4 +1,5 @@
 import ttkbootstrap as tb
+import requests as req
 from K import *
 from views.helper import View
 
@@ -11,22 +12,35 @@ class LoginView(View):
         self.create_widgets()
 
     def create_widgets(self):
-        tb.Label(self.frame, text="Email:").pack()
-        tb.Entry(self.frame, textvariable=self.email_var).pack()
-        tb.Label(self.frame, text="Password:").pack()
-        tb.Entry(self.frame, textvariable=self.password_var, show="*").pack()
-        tb.Button(self.frame, text="Login", command=self.login, bootstyle=SUCCESS).pack()
+        bg0 = tb.Frame(self.frame, bootstyle=LIGHT)
+        bg0.pack(expand=TRUE, fill=BOTH)
+        bg1 = tb.Frame(bg0, bootstyle=DARK)
+        bg1.pack(expand=TRUE, fill=BOTH)
+        bg2 = tb.Frame(bg0, bootstyle=DARK)
+        bg2.pack(expand=TRUE, fill=BOTH)
+        bg3 = tb.Frame(bg0, bootstyle=SECONDARY)
+        bg3.pack(expand=TRUE, side=BOTTOM, anchor=SE, padx=20, pady=20)  # Adjusted padding values
+
+        tb.Label(bg1, text="Login to Your Account", font=(FONT_FAMILY, 30), bootstyle="inverse dark").pack(padx=15, ipady=20)  # Adjusted padding values
+        tb.Label(bg1, text="Email:", font=(FONT_FAMILY, 20), bootstyle="inverse dark").pack(side=LEFT, anchor=S, padx=15, pady=15)  # Adjusted padding values
+        tb.Entry(bg1, textvariable=self.email_var, width=85).pack(side=LEFT, anchor=SE, padx=15, pady=15)  # Adjusted padding values
+        tb.Label(bg2, text="Password:", font=(FONT_FAMILY, 20), bootstyle="inverse dark").pack(side=LEFT, anchor=N, padx=15, pady=15)  # Adjusted padding values
+        tb.Entry(bg2, textvariable=self.password_var, show="*", width=80).pack(side=LEFT, anchor=NE, padx=15, pady=15)  # Adjusted padding values
+        tb.Button(bg3, text="Login", command=self.login, bootstyle=SUCCESS).pack(side=RIGHT, padx=10, pady=15)  # Adjusted padding values
+        tb.Button(bg3, text="Back", command=self.app.show_home_view, bootstyle=DANGER).pack(side=RIGHT, padx=20, pady=15)  # Adjusted padding values
 
     def login(self):
-        # Your authentication would need to be implemented here
         email = self.email_var.get()
         password = self.password_var.get()
 
-        if email == "admin" and password == "password":
+        auth = req.post(f"{self.app.url}token", data={"username": email,
+                                                      "password": password}).json()
+
+        try:
+            self.app.token = {"access_token": auth["access_token"], "token_type": "bearer"}
             self.app.authenticated = TRUE
-            self.app.token = {"access_token": "string", "token_type": "bearer"}
             self.app.email = email
             self.password_var.set("")
             self.app.show_tasks_view()
-        else:
-            self.create_toast("401 Error", "Bad Credentials")
+        except:
+            self.create_toast("401 Error", "Invalid Credentials")
