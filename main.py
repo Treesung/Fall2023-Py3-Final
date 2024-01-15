@@ -2,11 +2,10 @@ import ttkbootstrap as tb
 from K import *
 from views import login, registration, tasks, home
 
-
 class TaskApp(tb.Window):
     def __init__(self):
         super().__init__(themename="pulse")
-        self.title("Task Manager")
+        self.title("Salary Manager")
         self.geometry("1280x720")
 
         # User variables
@@ -22,10 +21,9 @@ class TaskApp(tb.Window):
             "home": home.HomeView(self),
             "registration": registration.RegistrationView(self),
             "login": login.LoginView(self),
-            "view_tasks": tasks.TasksView(self),
-            "view_task": tasks.TaskView(self),
-            "create_task": tasks.CreateTaskView(self),
-            "update_task": tasks.UpdateTaskView(self)
+            "view_tasks": tasks.SalariesView(self),
+            "create_task": tasks.CreateSalaryView(self),
+            "update_task": tasks.UpdateSalaryView(self)
         }
 
         # Init Welcome Screen
