@@ -66,7 +66,7 @@ class CreateSalaryView(View):
             "description": salary_description,
             "priority": 1,
             "title": salary_month,
-            "id": teacher_id  # Assuming the 'id' field represents Teacher ID
+            "id": teacher_id
         }
         response = req.post(f"{self.app.url}salaries", data=dumps(data), headers=headers)
 
@@ -74,8 +74,6 @@ class CreateSalaryView(View):
             self.create_toast("Salary Created", f"Salary for {salary_month} created successfully")
         else:
             self.create_toast("Error", f"Request failed with status code {response.status_code}")
-
-        # After creating the salary, show the salary page
         self.app.show_tasks_view()
 
 
@@ -124,6 +122,4 @@ class UpdateSalaryView(View):
             self.create_toast("Salary Updated", f"Salary for {updated_month} updated successfully")
         else:
             self.create_toast("Error", f"Request failed with status code {response.status_code}")
-
-        # After updating the salary, show the salary page
         self.app.show_tasks_view()
